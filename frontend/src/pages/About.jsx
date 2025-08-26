@@ -1,7 +1,7 @@
-// src/pages/About.jsx
+
 import React from "react";
 import { motion } from "framer-motion";
-// Import all images from a folder inside your src directory
+
 import fruu2 from '../assets/images/fruu2.jpg'; 
 import fruu3 from '../assets/images/fruu3.jpg';
 import fruit from '../assets/images/fruit.jpg';
@@ -44,7 +44,7 @@ const About = () => {
         </motion.div>
       </div>
 
-      {/* Section 2 */}
+      
       <div className="about-container reverse">
         <motion.div
           className="about-text"
@@ -70,7 +70,7 @@ const About = () => {
         </motion.div>
       </div>
 
-      {/* Section 3 */}
+      
       <div className="about-container">
         <motion.div
           className="about-image"

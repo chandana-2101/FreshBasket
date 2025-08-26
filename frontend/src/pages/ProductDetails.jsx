@@ -11,7 +11,7 @@ const ProductDetails = () => {
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
 
-  // ✅ Fetch product details
+ 
   useEffect(() => {
     axios
       .get(`http://localhost:5000/api/products/${id}`)
@@ -35,21 +35,21 @@ const ProductDetails = () => {
     );
   if (!product) return null;
 
-  // ✅ Total price calculation
+  
   const totalPrice = product.price * quantity;
 
-  // ✅ Handle Add to Cart
+ 
   const handleAddToCart = async () => {
     try {
       const res = await axios.post("http://localhost:5000/api/cart/add", {
-      userId: "64ffbc12a8c45e56bcd12345", // 🔹 use logged-in user ID if you have auth, else keep dummy
+      userId: "64ffbc12a8c45e56bcd12345", 
       productId: product._id,
       quantity,
       });
 
       if (res.status === 201 || res.status === 200) {
         alert(`${product.name} added to cart!`);
-        navigate("/cart"); // 👉 redirect user to cart page
+        navigate("/cart"); 
       }
     } catch (err) {
       alert(err.response?.data?.message || "Failed to add to cart");

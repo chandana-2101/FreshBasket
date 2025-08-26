@@ -7,7 +7,7 @@
 
 .product-details-card {
   display: flex;
-  flex-direction: row; /* Image left, details right */
+  flex-direction: row; 
   width: 90%;
   max-width: 1200px;
   border: 1px solid #ddd;

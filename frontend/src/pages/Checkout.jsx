@@ -46,7 +46,7 @@ const Checkout = () => {
     try {
       await placeOrder();
     } catch (error) {
-      console.error("Fetch error details:", error); // Detailed error logging
+      console.error("Fetch error details:", error); 
       setErrors({ submit: "Failed to place order. Please try again." });
     } finally {
       setLoading(false);
@@ -62,14 +62,14 @@ const Checkout = () => {
         },
         body: JSON.stringify({
           customerInfo: formData,
-          items: [], // Replace with cart data if available
-          totalPrice: 0, // Calculate if available
+          items: [], 
+          totalPrice: 0, 
         }),
       });
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.log("Server response error:", errorText); // Log server response
+        console.log("Server response error:", errorText); 
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
@@ -85,7 +85,7 @@ const Checkout = () => {
   return (
     <div className="checkout-container">
       <div className="checkout-form">
-        <h2 className="checkout-title">Checkout</h2>
+        <h1 className="checkout-title">Checkout</h1>
         {orderPlaced ? (
           <div className="success-message">
             <p>Order placed successfully!</p>

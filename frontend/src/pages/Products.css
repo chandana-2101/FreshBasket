@@ -124,7 +124,7 @@
 
 @media (max-width: 768px) {
   .products-container {
-    grid-template-columns: 1fr; /* single column */
+    grid-template-columns: 1fr; 
   }
   .product-card img {
     max-height: 300px; 

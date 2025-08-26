@@ -7,10 +7,10 @@
 }
 
 .checkout-form {
-  background: #fff;
+  background: #f5f0f0;
   padding: 1.5rem;
   border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(10, 2, 59, 0.1);
   width: 100%;
   max-width: 500px; /* Base max-width for larger screens */
   box-sizing: border-box; /* Ensures padding doesn't affect width */
@@ -19,7 +19,7 @@
 .checkout-title {
   text-align: center;
   margin-bottom: 1.5rem;
-  font-size: 1.8rem;
+  font-size: 3rem;
   font-weight: bold;
   color: #1f2937;
 }
@@ -90,13 +90,14 @@
 
 .error {
   color: red;
-  font-size: 0.9rem;
+  font-size: 1.5rem;
   margin-top: 0.2rem;
 }
 
 .success-message {
+  font-size: 30px;
   text-align: center;
-  color: #2d7765;
+  color: #250550;
 }
 
 /* Responsive Design */
@@ -107,7 +108,7 @@
   }
 
   .checkout-title {
-    font-size: 1.6rem;
+    font-size: 3rem;
   }
 
   .items-section h3 {
@@ -136,7 +137,7 @@
   }
 
   .checkout-title {
-    font-size: 1.4rem;
+    font-size: 2.5rem;
   }
 
   .items-section h3 {
@@ -161,7 +162,7 @@
   }
 
   .checkout-title {
-    font-size: 1.2rem;
+    font-size:2rem;
   }
 
   .items-section h3 {
@@ -189,7 +190,7 @@
   }
 
   .checkout-title {
-    font-size: 1rem;
+    font-size: 1.9rem;
   }
 
   .items-section h3 {
