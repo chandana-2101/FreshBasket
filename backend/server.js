@@ -22,8 +22,10 @@ const app = express();
 // ✅ Allow both local dev + deployed frontend
 const allowedOrigins = [
   "http://localhost:3000",
-  /\.vercel\.app$/   // ✅ allow any vercel.app subdomain
+  "https://fresh-basket-blue.vercel.app", // your deployed frontend
+  /\.vercel\.app$/   // allow any vercel.app subdomain
 ];
+
 
 app.use(cors({
   origin: (origin, callback) => {
