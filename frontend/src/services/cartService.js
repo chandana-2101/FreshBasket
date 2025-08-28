@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = process.env.REACT_APP_BACKEND_URL || "https://freshbasket-2tqi.onrender.com/api/cart";
+const API_URL = process.env.REACT_APP_BACKEND_URL || "https://freshbasket-mf9e.onrender.com/api/cart";
 
 export const getCart = async (userId) => {
   const res = await axios.get(`${API_URL}/${userId}`);
