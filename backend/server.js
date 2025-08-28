@@ -20,7 +20,7 @@ const __dirname = path.dirname(__filename);
 const app = express();
 
 // Allow CORS for frontend (adjust origin if different)
-app.use(cors({ origin: "https://fresh-basket-bay.vercel.app/", credentials: true }));
+app.use(cors({ origin: "https://fresh-basket-bay.vercel.app", credentials: true }));
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "public/uploads")));
 app.use("/api/orders", orderRoutes);
