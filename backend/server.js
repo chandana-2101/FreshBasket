@@ -22,7 +22,7 @@ const app = express();
 // ✅ Allow both local dev + deployed frontend
 const allowedOrigins = [
   "http://localhost:3000",                 // local React dev
-  "https://fresh-basket-bay.vercel.app",   // your Vercel frontend
+  "https://fresh-basket-blue.vercel.app",   // your Vercel frontend
 ];
 
 app.use(cors({
