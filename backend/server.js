@@ -19,7 +19,7 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// Allow CORS for frontend (adjust origin if different)
+
 app.use(cors({ origin: "https://fresh-basket-bay.vercel.app", credentials: true }));
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "public/uploads")));
@@ -38,6 +38,8 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Something went wrong!", error: err.message });
 });
 
+
 const PORT = process.env.PORT || 5000;
-//app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
-export default app;
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
+export default app; 
