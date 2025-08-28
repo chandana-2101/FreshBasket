@@ -19,27 +19,47 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
+// ✅ Allow both local dev + deployed frontend
+const allowedOrigins = [
+  "http://localhost:3000",                 // local React dev
+  "https://fresh-basket-bay.vercel.app",   // your Vercel frontend
+];
 
-app.use(cors({ origin: "https://fresh-basket-bay.vercel.app", credentials: true }));
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+}));
+
+// Middleware
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "public/uploads")));
+
+// Routes
 app.use("/api/orders", orderRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/products", productRoutes);
 
 app.get("/", (req, res) => {
-  res.send("API is running...");
+  res.send("✅ API is running...");
 });
 
+// Database
 connectDB();
 
+// Global error handler
 app.use((err, req, res, next) => {
   console.error("Global error handler:", err.stack);
   res.status(500).json({ message: "Something went wrong!", error: err.message });
 });
 
-
+// Server listen
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 
-export default app; 
+export default app;
