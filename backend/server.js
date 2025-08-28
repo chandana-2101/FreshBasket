@@ -21,20 +21,26 @@ const app = express();
 
 // ✅ Allow both local dev + deployed frontend
 const allowedOrigins = [
-  "http://localhost:3000",                 // local React dev
-  "https://fresh-basket-blue.vercel.app"   // ✅ correct Vercel frontend
+  "http://localhost:3000",
+  /\.vercel\.app$/   // ✅ allow any vercel.app subdomain
 ];
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (!origin) return callback(null, true); // allow server-to-server calls
+    if (
+      allowedOrigins.some((o) =>
+        o instanceof RegExp ? o.test(origin) : o === origin
+      )
+    ) {
       callback(null, true);
     } else {
-      callback(new Error("Not allowed by CORS"));
+      callback(new Error("Not allowed by CORS: " + origin));
     }
   },
   credentials: true,
 }));
+
 
 // Middleware
 app.use(express.json());
