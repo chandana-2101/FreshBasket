@@ -1,4 +1,3 @@
-// frontend/src/services/cartService.js
 import axios from "axios";
 
 // ✅ Base API URL: uses env variable in production, falls back to localhost in dev
