@@ -19,14 +19,13 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// ✅ Allow both local dev + deployed frontend
+// ✅ Allow both local dev + deployed frontend URLs
 const allowedOrigins = [
   "http://localhost:3000",
-  process.env.CLIENT_URL,
-  /\.vercel\.app$/
+  process.env.CLIENT_URL, // https://fresh-basket-blue.vercel.app
+  "https://freshbasket-mf9e.onrender.com", // Add Render frontend URL
+  /\.vercel\.app$/ // Keep regex for Vercel subdomains
 ];
-
-
 
 app.use(cors({
   origin: (origin, callback) => {
@@ -43,7 +42,6 @@ app.use(cors({
   },
   credentials: true,
 }));
-
 
 // Middleware
 app.use(express.json());
