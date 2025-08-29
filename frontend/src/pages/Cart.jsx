@@ -1,24 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { getCart, updateCart, removeFromCart } from "../services/cartService";
+import { getCart, updateCart, removeFromCart, API_BASE } from "../services/cartService";
 import "./Cart.css";
 
 const Cart = () => {
-  const userId = "64ffbc12a8c45e56bcd12345";
+  const userId = "64ffbc12a8c45e56bcd12345"; // ✅ Ideally from auth context
   const [cart, setCart] = useState(null);
   const [loading, setLoading] = useState(true);
   const [totalAmount, setTotalAmount] = useState(0);
 
-  
   const calculateTotal = (products) => {
     return products.reduce((acc, item) => {
       if (item.productId) {
-        return acc + (item.productId.price * item.quantity);
+        return acc + item.productId.price * item.quantity;
       }
       return acc;
     }, 0);
   };
 
- 
   useEffect(() => {
     async function fetchCart() {
       try {
@@ -32,10 +30,8 @@ const Cart = () => {
       }
     }
     fetchCart();
-  }, []);
+  }, [userId]);
 
-  // After updating the quantity, it
-  // recalculates and updates the total amount.
   const handleQuantityChange = async (productId, quantity) => {
     if (quantity < 1) return;
     try {
@@ -47,8 +43,6 @@ const Cart = () => {
     }
   };
 
-  //  After removing a product, it
-  // recalculates and updates the total amount.
   const handleRemove = async (productId) => {
     try {
       const updated = await removeFromCart(userId, productId);
@@ -69,12 +63,19 @@ const Cart = () => {
       <div className="cart-items">
         {cart.products.map((item) => {
           if (!item.productId) return null;
+
+          // ✅ Use API_BASE for images
+          const imageUrl = item.productId.image?.startsWith("http")
+            ? item.productId.image
+            : `${API_BASE}${item.productId.image || "/uploads/default.jpg"}`;
+
           return (
             <div className="cart-item" key={item.productId._id}>
               <img
-                src={`http://localhost:5000${item.productId.image}`}
+                src={imageUrl}
                 alt={item.productId.name}
                 className="cart-item-image"
+                onError={(e) => { e.target.src = "/uploads/default.jpg"; }}
               />
               <div className="cart-item-details">
                 <h3>{item.productId.name}</h3>
@@ -105,26 +106,25 @@ const Cart = () => {
           );
         })}
       </div>
-      
-      {/* This section correctly displays the calculated total amount */}
+
       <div className="total-amount-container">
         <h2 className="total-amount-text">Total Amount: ₹{totalAmount}</h2>
       </div>
-      
+
       <div className="checkout-btn-container" style={{ textAlign: "center", marginTop: "20px" }}>
-          <button
-            className="proceed-btn"
-            onClick={() => (window.location.href = "/checkout")}
-          >
-            Proceed next to Buy
-          </button>
-          <button
-            className="back-to-products-btn"
-            onClick={() => (window.location.href = "/products")}
-          >
-            Back to Products
-          </button>
-        </div>
+        <button
+          className="proceed-btn"
+          onClick={() => (window.location.href = "/checkout")}
+        >
+          Proceed next to Buy
+        </button>
+        <button
+          className="back-to-products-btn"
+          onClick={() => (window.location.href = "/products")}
+        >
+          Back to Products
+        </button>
+      </div>
     </div>
   );
 };

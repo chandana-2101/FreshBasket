@@ -1,8 +1,7 @@
 import axios from "axios";
 
-// ✅ Base API URL: from env on Vercel, localhost in dev
 const API_BASE =
-  process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
+  (process.env.REACT_APP_BACKEND_URL || "http://localhost:5000").replace(/\/+$/, ""); 
 
 export const getCart = async (userId) => {
   const res = await axios.get(`${API_BASE}/api/cart/${userId}`);
@@ -30,3 +29,5 @@ export const addToCart = async (userId, productId, quantity) => {
   });
   return res.data;
 };
+
+export { API_BASE }; // export so Cart.jsx can use for images
