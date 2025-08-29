@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// Base API URL from env, fallback to your Render backend
-export const API_BASE = process.env.REACT_APP_BACKEND_URL || "https://freshbasket-mf9e.onrender.com";
+const API_BASE =
+  (process.env.REACT_APP_BACKEND_URL || "http://localhost:5000").replace(/\/+$/, ""); 
 
 export const getCart = async (userId) => {
   const res = await axios.get(`${API_BASE}/api/cart/${userId}`);
@@ -9,7 +9,10 @@ export const getCart = async (userId) => {
 };
 
 export const updateCart = async (userId, productId, quantity) => {
-  const res = await axios.put(`${API_BASE}/api/cart/${userId}`, { productId, quantity });
+  const res = await axios.put(`${API_BASE}/api/cart/${userId}`, {
+    productId,
+    quantity,
+  });
   return res.data;
 };
 
@@ -19,6 +22,12 @@ export const removeFromCart = async (userId, productId) => {
 };
 
 export const addToCart = async (userId, productId, quantity) => {
-  const res = await axios.post(`${API_BASE}/api/cart/add`, { userId, productId, quantity });
+  const res = await axios.post(`${API_BASE}/api/cart/add`, {
+    userId,
+    productId,
+    quantity,
+  });
   return res.data;
 };
+
+export { API_BASE }; // export so Cart.jsx can use for images
