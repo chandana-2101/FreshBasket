@@ -19,42 +19,47 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// ✅ CORS setup for both local dev and deployed frontend
+// ✅ CORS setup (local + Vercel frontend)
 const allowedOrigins = [
-  "http://localhost:3000",                // local development
-  "https://fresh-basket-blue.vercel.app" // deployed frontend
+  "http://localhost:3000",
+  "https://fresh-basket-blue.vercel.app",
 ];
 
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "public/uploads")));
 
+// ✅ Routes (API prefix)
 app.use("/api/orders", orderRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/products", productRoutes);
 
-// Simple root route
+// Root route
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
-// Connect to MongoDB
+// Connect DB
 connectDB();
 
 // Global error handler
 app.use((err, req, res, next) => {
   console.error("Global error handler:", err.stack);
-  res.status(500).json({ message: "Something went wrong!", error: err.message });
+  res
+    .status(500)
+    .json({ message: "Something went wrong!", error: err.message });
 });
 
 // Start server

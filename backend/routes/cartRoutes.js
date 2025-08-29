@@ -1,8 +1,14 @@
 import express from "express";
-import { getCart, updateCart, removeFromCart, addToCart } from "../controllers/cartController.js";
+import {
+  getCart,
+  updateCart,
+  removeFromCart,
+  addToCart,
+} from "../controllers/cartController.js";
 
 const router = express.Router();
 
+// ✅ Matches frontend calls: /api/cart/:userId
 router.get("/:userId", getCart);
 router.put("/:userId", updateCart);
 router.delete("/:userId/:productId", removeFromCart);
