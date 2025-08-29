@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import "./ProductDetails.css";
 import axios from "axios";
 
+const API_BASE = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
+
 const ProductDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -11,10 +13,9 @@ const ProductDetails = () => {
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
 
- 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/api/products/${id}`)
+      .get(`${API_BASE}/api/products/${id}`)
       .then((res) => {
         setProduct(res.data);
         setLoading(false);
@@ -26,7 +27,11 @@ const ProductDetails = () => {
   }, [id]);
 
   if (loading)
-    return <p style={{ textAlign: "center", marginTop: "20px" }}>Loading product...</p>;
+    return (
+      <p style={{ textAlign: "center", marginTop: "20px" }}>
+        Loading product...
+      </p>
+    );
   if (error)
     return (
       <p style={{ textAlign: "center", marginTop: "20px", color: "red" }}>
@@ -35,21 +40,19 @@ const ProductDetails = () => {
     );
   if (!product) return null;
 
-  
   const totalPrice = product.price * quantity;
 
- 
   const handleAddToCart = async () => {
     try {
-      const res = await axios.post("http://localhost:5000/api/cart/add", {
-      userId: "64ffbc12a8c45e56bcd12345", 
-      productId: product._id,
-      quantity,
+      const res = await axios.post(`${API_BASE}/api/cart/add`, {
+        userId: "64ffbc12a8c45e56bcd12345", // replace with real user ID if available
+        productId: product._id,
+        quantity,
       });
 
       if (res.status === 201 || res.status === 200) {
         alert(`${product.name} added to cart!`);
-        navigate("/cart"); 
+        navigate("/cart");
       }
     } catch (err) {
       alert(err.response?.data?.message || "Failed to add to cart");
@@ -60,7 +63,11 @@ const ProductDetails = () => {
     <div className="product-details-container">
       <div className="product-details-card">
         <img
-          src={`http://localhost:5000${product.image}`}
+          src={
+            product.image.startsWith("http")
+              ? product.image
+              : `${API_BASE}${product.image}`
+          }
           alt={product.name}
           className="product-details-image"
         />
@@ -79,7 +86,9 @@ const ProductDetails = () => {
             id="quantity"
             min="1"
             value={quantity}
-            onChange={(e) => setQuantity(Math.max(1, Number(e.target.value)))}
+            onChange={(e) =>
+              setQuantity(Math.max(1, Number(e.target.value)))
+            }
             className="quantity-input"
           />
 

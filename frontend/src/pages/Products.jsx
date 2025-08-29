@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Products.css";
 
+const API_BASE = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
+
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -11,7 +13,7 @@ const Products = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/products");
+        const res = await fetch(`${API_BASE}/api/products`);
         if (!res.ok) throw new Error("Failed to fetch products");
         const data = await res.json();
         setProducts(data);
@@ -24,8 +26,18 @@ const Products = () => {
     fetchProducts();
   }, []);
 
-  if (loading) return <p style={{ textAlign: "center", marginTop: "20px" }}>Loading products...</p>;
-  if (error) return <p style={{ textAlign: "center", marginTop: "20px", color: "red" }}>{error}</p>;
+  if (loading)
+    return (
+      <p style={{ textAlign: "center", marginTop: "20px" }}>
+        Loading products...
+      </p>
+    );
+  if (error)
+    return (
+      <p style={{ textAlign: "center", marginTop: "20px", color: "red" }}>
+        {error}
+      </p>
+    );
 
   return (
     <div className="products-container">
@@ -40,7 +52,7 @@ const Products = () => {
             src={
               product.image.startsWith("http")
                 ? product.image
-                : `http://localhost:5000${product.image}`
+                : `${API_BASE}${product.image}`
             }
             alt={product.name}
             className="product-image"
