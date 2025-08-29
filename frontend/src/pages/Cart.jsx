@@ -3,15 +3,16 @@ import { getCart, updateCart, removeFromCart, API_BASE } from "../services/cartS
 import "./Cart.css";
 
 const Cart = () => {
-  const userId = "64ffbc12a8c45e56bcd12345"; // ideally from auth context
+  const userId = "64ffbc12a8c45e56bcd12345"; // Ideally from auth context
   const [cart, setCart] = useState({ products: [] });
   const [loading, setLoading] = useState(true);
   const [totalAmount, setTotalAmount] = useState(0);
+  const [error, setError] = useState(null);
 
   // Calculate total safely
   const calculateTotal = (products = []) => {
     return products.reduce((acc, item) => {
-      if (item.productId) {
+      if (item.productId?.price && item.quantity) {
         return acc + item.productId.price * item.quantity;
       }
       return acc;
@@ -22,11 +23,14 @@ const Cart = () => {
   useEffect(() => {
     async function fetchCart() {
       try {
+        setLoading(true);
+        setError(null);
         const data = await getCart(userId);
         setCart(data || { products: [] });
         setTotalAmount(calculateTotal(data?.products));
       } catch (err) {
-        console.error("Error fetching cart:", err);
+        console.error("Error fetching cart:", err.message);
+        setError("Failed to load cart. Please try again later.");
         setCart({ products: [] });
         setTotalAmount(0);
       } finally {
@@ -40,27 +44,35 @@ const Cart = () => {
   const handleQuantityChange = async (productId, quantity) => {
     if (quantity < 1) return;
     try {
+      setLoading(true);
       const updated = await updateCart(userId, productId, quantity);
       setCart(updated || { products: [] });
       setTotalAmount(calculateTotal(updated?.products));
     } catch (err) {
-      console.error("Error updating cart:", err);
+      console.error("Error updating cart:", err.message);
+      setError("Failed to update cart. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
   // Remove item
   const handleRemove = async (productId) => {
     try {
+      setLoading(true);
       const updated = await removeFromCart(userId, productId);
       setCart(updated || { products: [] });
       setTotalAmount(calculateTotal(updated?.products));
     } catch (err) {
-      console.error("Error removing item:", err);
+      console.error("Error removing item:", err.message);
+      setError("Failed to remove item. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
   if (loading) return <p style={{ textAlign: "center", marginTop: "20px" }}>Loading cart...</p>;
-
+  if (error) return <p style={{ textAlign: "center", marginTop: "20px", color: "red" }}>{error}</p>;
   if (!cart.products.length)
     return <p style={{ textAlign: "center", marginTop: "20px" }}>Your cart is empty.</p>;
 
@@ -72,9 +84,9 @@ const Cart = () => {
         {cart.products.map((item) => {
           if (!item.productId) return null;
 
-          const imageUrl = item.productId.image?.startsWith("http")
-            ? item.productId.image
-            : `${API_BASE}${item.productId.image || "/uploads/default.jpg"}`;
+          const imageUrl = item.productId.image
+            ? `${API_BASE}/uploads/${item.productId.image}` // Assume images are in /uploads
+            : `${API_BASE}/uploads/default.jpg`; // Fallback image
 
           return (
             <div className="cart-item" key={item.productId._id}>
@@ -82,7 +94,7 @@ const Cart = () => {
                 src={imageUrl}
                 alt={item.productId.name}
                 className="cart-item-image"
-                onError={(e) => { e.target.src = "/uploads/default.jpg"; }}
+                onError={(e) => { e.target.src = `${API_BASE}/uploads/default.jpg`; }}
               />
               <div className="cart-item-details">
                 <h3>{item.productId.name}</h3>
