@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import "./Checkout.css";
 
+// ✅ Use env variable (works in both local + deployed)
+const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
 const Checkout = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -46,7 +49,7 @@ const Checkout = () => {
     try {
       await placeOrder();
     } catch (error) {
-      console.error("Fetch error details:", error); 
+      console.error("Fetch error details:", error);
       setErrors({ submit: "Failed to place order. Please try again." });
     } finally {
       setLoading(false);
@@ -55,21 +58,21 @@ const Checkout = () => {
 
   const placeOrder = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/orders", {
+      const response = await fetch(`${API_BASE}/api/orders`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           customerInfo: formData,
-          items: [], 
-          totalPrice: 0, 
+          items: [], // TODO: Replace with real cart items
+          totalPrice: 0, // TODO: Replace with real total price
         }),
       });
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.log("Server response error:", errorText); 
+        console.log("Server response error:", errorText);
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
