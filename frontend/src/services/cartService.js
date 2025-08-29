@@ -1,27 +1,30 @@
 import axios from "axios";
 
-// ✅ Base API URL: uses env variable in production, falls back to localhost in dev
+// ✅ Base API URL: remove trailing slash (to avoid //api)
 const API_BASE =
-  process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
+  (process.env.REACT_APP_BACKEND_URL?.replace(/\/$/, "")) || "http://localhost:5000";
 
 // 🛒 Get cart for a user
 export const getCart = async (userId) => {
-  const res = await axios.get(`${API_BASE}/api/cart/${userId}`);
+  const url = `${API_BASE}/api/cart/${userId}`;
+  console.log("📦 Fetching cart from:", url); // Debug log
+  const res = await axios.get(url);
   return res.data;
 };
 
 // 🛒 Update quantity of a product in cart
 export const updateCart = async (userId, productId, quantity) => {
-  const res = await axios.put(`${API_BASE}/api/cart/${userId}`, {
-    productId,
-    quantity,
-  });
+  const url = `${API_BASE}/api/cart/${userId}`;
+  console.log("✏️ Updating cart at:", url, { productId, quantity }); // Debug log
+  const res = await axios.put(url, { productId, quantity });
   return res.data;
 };
 
 // 🗑 Remove product from cart
 export const removeFromCart = async (userId, productId) => {
-  const res = await axios.delete(`${API_BASE}/api/cart/${userId}/${productId}`);
+  const url = `${API_BASE}/api/cart/${userId}/${productId}`;
+  console.log("🗑 Removing from cart at:", url); // Debug log
+  const res = await axios.delete(url);
   return res.data;
 };
 
