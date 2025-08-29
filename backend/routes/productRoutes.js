@@ -3,7 +3,8 @@ import { getAllProducts, getProductById } from "../controllers/productController
 
 const router = express.Router();
 
-router.get("/", getAllProducts);
+// Handle both /api/products and /api/products/
+router.get(["/", "/"], getAllProducts); // Duplicate route to handle trailing slash
 router.get("/:id", getProductById);
 
 export default router;
