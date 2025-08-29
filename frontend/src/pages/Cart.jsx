@@ -3,12 +3,13 @@ import { getCart, updateCart, removeFromCart, API_BASE } from "../services/cartS
 import "./Cart.css";
 
 const Cart = () => {
-  const userId = "64ffbc12a8c45e56bcd12345"; // ✅ Ideally from auth context
-  const [cart, setCart] = useState(null);
+  const userId = "64ffbc12a8c45e56bcd12345"; // ideally from auth context
+  const [cart, setCart] = useState({ products: [] });
   const [loading, setLoading] = useState(true);
   const [totalAmount, setTotalAmount] = useState(0);
 
-  const calculateTotal = (products) => {
+  // Calculate total safely
+  const calculateTotal = (products = []) => {
     return products.reduce((acc, item) => {
       if (item.productId) {
         return acc + item.productId.price * item.quantity;
@@ -17,14 +18,17 @@ const Cart = () => {
     }, 0);
   };
 
+  // Fetch cart on mount
   useEffect(() => {
     async function fetchCart() {
       try {
         const data = await getCart(userId);
-        setCart(data);
-        setTotalAmount(calculateTotal(data.products));
+        setCart(data || { products: [] });
+        setTotalAmount(calculateTotal(data?.products));
       } catch (err) {
         console.error("Error fetching cart:", err);
+        setCart({ products: [] });
+        setTotalAmount(0);
       } finally {
         setLoading(false);
       }
@@ -32,39 +36,42 @@ const Cart = () => {
     fetchCart();
   }, [userId]);
 
+  // Update quantity
   const handleQuantityChange = async (productId, quantity) => {
     if (quantity < 1) return;
     try {
       const updated = await updateCart(userId, productId, quantity);
-      setCart(updated);
-      setTotalAmount(calculateTotal(updated.products));
+      setCart(updated || { products: [] });
+      setTotalAmount(calculateTotal(updated?.products));
     } catch (err) {
       console.error("Error updating cart:", err);
     }
   };
 
+  // Remove item
   const handleRemove = async (productId) => {
     try {
       const updated = await removeFromCart(userId, productId);
-      setCart(updated);
-      setTotalAmount(calculateTotal(updated.products));
+      setCart(updated || { products: [] });
+      setTotalAmount(calculateTotal(updated?.products));
     } catch (err) {
       console.error("Error removing item:", err);
     }
   };
 
-  if (loading) return <p>Loading cart...</p>;
-  if (!cart || !cart.products || cart.products.length === 0)
+  if (loading) return <p style={{ textAlign: "center", marginTop: "20px" }}>Loading cart...</p>;
+
+  if (!cart.products.length)
     return <p style={{ textAlign: "center", marginTop: "20px" }}>Your cart is empty.</p>;
 
   return (
     <div className="cart-container">
       <h1>Your Cart</h1>
+
       <div className="cart-items">
         {cart.products.map((item) => {
           if (!item.productId) return null;
 
-          // ✅ Use API_BASE for images
           const imageUrl = item.productId.image?.startsWith("http")
             ? item.productId.image
             : `${API_BASE}${item.productId.image || "/uploads/default.jpg"}`;
@@ -81,6 +88,7 @@ const Cart = () => {
                 <h3>{item.productId.name}</h3>
                 <p>₹{item.productId.price} × {item.quantity}</p>
                 <p className="total">= ₹{item.productId.price * item.quantity}</p>
+
                 <div className="cart-actions">
                   <button
                     onClick={() => handleQuantityChange(item.productId._id, item.quantity - 1)}
