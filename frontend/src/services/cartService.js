@@ -4,28 +4,35 @@ import axios from "axios";
 const API_BASE =
   (process.env.REACT_APP_BACKEND_URL?.replace(/\/$/, "")) || "http://localhost:5000";
 
-// 🛒 Get cart for a user
+// Cart API base
+const API_URL = `${API_BASE}/api/cart`;
+
+// 🛒 Get user cart
 export const getCart = async (userId) => {
-  const url = `${API_BASE}/api/cart/${userId}`;
-  console.log("📦 Fetching cart from:", url); // Debug log
-  const res = await axios.get(url);
-  return res.data;
+  const res = await axios.get(`${API_URL}/${userId}`);
+  return res.data; // return only the cart object
 };
 
-// 🛒 Update quantity of a product in cart
+// ✏️ Update quantity
 export const updateCart = async (userId, productId, quantity) => {
-  const url = `${API_BASE}/api/cart/${userId}`;
-  console.log("✏️ Updating cart at:", url, { productId, quantity });
-  const res = await axios.put(url, { productId, quantity });
-  return res.data;
+  const res = await axios.put(`${API_URL}/${userId}`, { productId, quantity });
+  return res.data; // return updated cart
 };
 
-// 🗑 Remove product from cart
+// 🗑 Remove product
 export const removeFromCart = async (userId, productId) => {
-  const url = `${API_BASE}/api/cart/${userId}/${productId}`;
-  console.log("🗑 Removing from cart at:", url);
-  const res = await axios.delete(url);
-  return res.data;
+  const res = await axios.delete(`${API_URL}/${userId}/${productId}`);
+  return res.data; // return updated cart
+};
+
+// ➕ Add to cart
+export const addToCart = async (userId, productId, quantity) => {
+  const res = await axios.post(`${API_URL}/add`, {
+    userId,
+    productId,
+    quantity,
+  });
+  return res.data; // return updated cart
 };
 
 export { API_BASE };

@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Products.css";
 
-// ✅ Base API URL: from env (Vercel/Render) or localhost in dev
+// ✅ Base API URL: remove trailing slash if exists
 const API_BASE =
-  process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
+  (process.env.REACT_APP_BACKEND_URL?.replace(/\/$/, "")) || "http://localhost:5000";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -15,7 +15,9 @@ const Products = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch(`${API_BASE}/api/products`);
+        const url = `${API_BASE}/api/products`;
+        console.log("📦 Fetching products from:", url);
+        const res = await fetch(url);
         if (!res.ok) throw new Error("Failed to fetch products");
         const data = await res.json();
         setProducts(data);
