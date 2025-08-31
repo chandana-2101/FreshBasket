@@ -15,7 +15,7 @@ const Products = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const url = `${API_BASE}api/products`;
+        const url = `${API_BASE}/api/products`;
         console.log("📦 Fetching products from:", url);
         const res = await fetch(url);
         if (!res.ok) throw new Error("Failed to fetch products");
